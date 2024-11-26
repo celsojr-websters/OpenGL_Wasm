@@ -49,10 +49,11 @@ std::string vertexShaderPath = std::string(RESOURCES_DIR) + "/shaders/vertex_sha
 ```
 
 ### Task list
-- [ ] Breakpoint not being hit in the debug mode from VS Code
 - [ ] Wasm build not tested yet
-- [ ] Better code example for testing
-- [ ] Third-party libraries as git sub modules
-- [ ] Windows support test
+- [x] Better code example for testing
+- [ ] Formatting rules
+- [ ] *Third-party libraries as git sub modules
+- [x] Windows build support test
 - [ ] Linux support test
-- [ ] macOS support test
+- [x] macOS build support test
+- [ ] Breakpoint not being hit in the debug mode from VS Code
