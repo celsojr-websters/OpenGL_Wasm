@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Native",
+            "type": "shell",
+            "command": "make",
+            "args": ["native"],
+            "group": "build"
+        },
+        {
+            "label": "Build WASM",
+            "type": "shell",
+            "command": "make",
+            "args": ["wasm"],
+            "group": "build"
+        }
+    ]
+}
