@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Include the Emscripten library only if targetting WebAssembly
+// Include the Emscripten library only if targeting WebAssembly
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
 #define GLFW_INCLUDE_ES3
+#else
+// #include <glad/glad.h>
 #endif
 
 #include <GLFW/glfw3.h>
@@ -69,15 +71,16 @@ int main() {
     glfwTerminate();
     force_exit();
   }
+
   // Setup the Key Press handler
   glfwSetKeyCallback(window, key_callback);
+
   // Select the window as the drawing destination
   glfwMakeContextCurrent(window);
 
   std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
   std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
   std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
-  std::cout << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
   // Near white background
   auto color = rgb(0.0f, 200.0f, 0.0f);
@@ -87,10 +90,19 @@ int main() {
 #ifdef __EMSCRIPTEN__
   emscripten_set_main_loop(generate_frame, 0, false);
 #else
+  // Glad loading is required for this GL_SHADING_LANGUAGE_VERSION
+  // if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+  //     std::cerr << "Failed to initialize GLAD" << std::endl;
+  //     return -1;
+  // }
+
+  // std::cout << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+
   // Display the window until ESC is pressed
   while (!glfwWindowShouldClose(window)) {
     generate_frame();
   }
+
   // Clean up
   glfwDestroyWindow(window);
   glfwTerminate();
