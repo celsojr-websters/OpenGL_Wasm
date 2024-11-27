@@ -98,7 +98,7 @@ int main() {
     std::cout << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
     // Near white background
-    auto color = rgb(100.0f, 088.0f, 114.0f);
+    auto color = rgb(100.0f, 200.0f, 0.0f);
     glClearColor(color.r, color.g, color.b, 0.0f);
 
     // Run the loop correctly for the target environment

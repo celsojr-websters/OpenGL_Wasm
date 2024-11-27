@@ -12,12 +12,6 @@ if (MSVC)
     # /Zi: Generates debugging information.
     # /Od: Disables optimizations.
     set(CMAKE_CXX_FLAGS_DEBUG "/Zi /Od")
-
-    # Ensure SIMD optimizations take place
-    # target_compile_options(OpenGLProject PRIVATE /arch:AVX2)
-    
-    # Set subsystem to WINDOWS for a no-console application
-    # set_target_properties(OpenGLProject PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS")
 else()
     # -g: Generates debugging information.
     # -O0: Disables optimizations (important for accurate debugging).
