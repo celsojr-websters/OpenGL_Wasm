@@ -61,8 +61,17 @@ int main() {
     fprintf(stderr, "Error: GLFW Initialization failed.");
     force_exit();
   }
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+
+  #ifdef __APPLE__
+      glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+      glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+      glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+      glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+  #else
+      glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+      glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+      glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  #endif
 
   // Create the display window
   window = glfwCreateWindow(640, 480, "OpenGL project", NULL, NULL);

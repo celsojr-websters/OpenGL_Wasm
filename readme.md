@@ -59,6 +59,12 @@ std::string vertexShaderPath = std::string(RESOURCES_DIR) + "/shaders/vertex_sha
 - [ ] Breakpoint not being hit in the debug mode from VS Code
 
 ```sh
-git clone --recurse-submodules <repository-url>
-git submodule update --init --recursive
+# To clone the repo
+git clone --recurse-submodules --shallow-submodules --depth=1 <repo-url>
+
+# Single step/submodule
+git submodule update --init --depth=1 path/to/submodule
+
+# For all submodules
+git submodule update --init --depth=1 --recursive
 ```
