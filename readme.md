@@ -52,8 +52,13 @@ std::string vertexShaderPath = std::string(RESOURCES_DIR) + "/shaders/vertex_sha
 - [ ] Wasm build not tested yet
 - [x] Better code example for testing
 - [ ] Formatting rules
-- [ ] *Third-party libraries as git sub modules
+- [ ] (WIP) Third-party libraries as git sub modules
 - [x] Windows build support test
 - [ ] Linux support test
 - [x] macOS build support test
 - [ ] Breakpoint not being hit in the debug mode from VS Code
+
+```sh
+git clone --recurse-submodules <repository-url>
+git submodule update --init --recursive
+```

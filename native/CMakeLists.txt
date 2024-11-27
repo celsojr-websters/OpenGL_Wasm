@@ -1,65 +1,49 @@
-# Native build configuration
 cmake_minimum_required(VERSION 3.20)
 project(OpenGLNative)
 
-# FetchContent for dependencies
-include(FetchContent)
+# Get variables from the parent scope
+set(SRC_DIR ${SRC_DIR})
+set(INCLUDE_DIR ${INCLUDE_DIR})
+set(RESOURCES_DIR ${RESOURCES_DIR})
+set(EXTERNAL_DIR ${EXTERNAL_DIR})
 
-# GLFW
-FetchContent_Declare(
-    glfw
-    GIT_REPOSITORY https://github.com/glfw/glfw.git
-    GIT_TAG 3.3.8
-    GIT_SHALLOW    TRUE
-    GIT_PROGRESS   TRUE
-)
-FetchContent_MakeAvailable(glfw)
+# Add submodules
+add_subdirectory(${EXTERNAL_DIR}/glfw ${CMAKE_BINARY_DIR}/third-party/glfw)
+set_target_properties(glfw PROPERTIES FOLDER "Dependencies")
 
-# GLM
-FetchContent_Declare(
-    glm
-    GIT_REPOSITORY https://github.com/g-truc/glm.git
-    GIT_TAG 0.9.9.8
-    GIT_SHALLOW    TRUE
-    GIT_PROGRESS   TRUE
-)
-FetchContent_MakeAvailable(glm)
+# GLM (header-only)
+set(GLM_INCLUDE_DIR ${EXTERNAL_DIR}/glm)
 
-# stb_image
-FetchContent_Declare(
-    stb
-    GIT_REPOSITORY https://github.com/nothings/stb.git
-    GIT_TAG master
-    GIT_SHALLOW    TRUE
-    GIT_PROGRESS   TRUE
-)
-FetchContent_MakeAvailable(stb)
+# stb_image (header-only)
+set(STB_INCLUDE_DIR ${EXTERNAL_DIR}/stb)
 
 # FreeType
-FetchContent_Declare(
-    freetype
-    GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
-    GIT_TAG VER-2-13-0
-    GIT_SHALLOW    TRUE
-    GIT_PROGRESS   TRUE
-)
-FetchContent_MakeAvailable(freetype)
+add_subdirectory(${EXTERNAL_DIR}/freetype ${CMAKE_BINARY_DIR}/third-party/freetype)
 
-# GLOB for sources
+# Source and header files
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS ${SRC_DIR}/*.cpp)
 file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS ${INCLUDE_DIR}/*.h)
+file(GLOB GLAD_FILES ${EXTERNAL_DIR}/glad/src/glad.c)
 
 # Add executable
-add_executable(OpenGLNative ${SOURCES} ${HEADERS})
+add_executable(OpenGLNative ${SOURCES} ${HEADERS} ${GLAD_FILES})
 
 # Include directories
-target_include_directories(OpenGLNative PRIVATE ${INCLUDE_DIR} ${stb_SOURCE_DIR})
+target_include_directories(OpenGLNative PRIVATE 
+    ${INCLUDE_DIR}
+    ${GLM_INCLUDE_DIR}
+    ${STB_INCLUDE_DIR}
+    ${EXTERNAL_DIR}/glad/include
+    ${EXTERNAL_DIR}/freetype/include
+)
 
-# Is the OpenGL available in the Operating System?
+# Link OpenGL and other libraries
 find_package(OpenGL REQUIRED)
+target_link_libraries(OpenGLNative
+    OpenGL::GL
+    glfw
+    freetype
+)
 
-# Link libraries
-target_link_libraries(OpenGLNative OpenGL::GL glfw glm freetype)
-
-# Resources
+# Set the resource directory as a compile-time definition
 target_compile_definitions(OpenGLNative PRIVATE RESOURCES_DIR="${RESOURCES_DIR}")

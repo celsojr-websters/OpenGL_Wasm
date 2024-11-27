@@ -12,6 +12,7 @@
 #define GLFW_INCLUDE_ES3
 #endif
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
@@ -85,14 +86,19 @@ int main() {
     // Select the window as the drawing destination
     glfwMakeContextCurrent(window);
 
-    // Driver information
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cerr << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }
+
+    // Driver adapter information
     std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
     std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
     std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
     // Near white background
-    auto color = rgb(100.0f, 200.0f, 0.0f);
+    auto color = rgb(100.0f, 088.0f, 114.0f);
     glClearColor(color.r, color.g, color.b, 0.0f);
 
     // Run the loop correctly for the target environment
@@ -103,6 +109,7 @@ int main() {
     while (!glfwWindowShouldClose(window)) {
       generate_frame();
     }
+
     // Clean up
     glfwDestroyWindow(window);
     glfwTerminate();
