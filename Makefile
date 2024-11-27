@@ -11,7 +11,7 @@ wasm:
 	cmake --build build/wasm
 
 clean-unix:
-	rm -rf ./build
+	rm -rf ./build ./logs
 
 clean-win:
 	rmdir /s /q build

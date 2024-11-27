@@ -49,7 +49,7 @@ std::string vertexShaderPath = std::string(RESOURCES_DIR) + "/shaders/vertex_sha
 ```
 
 ### Task list
-- [ ] Wasm build not tested yet
+- [x] Wasm build not tested yet
 - [x] Better code example for testing
 - [ ] Formatting rules
 - [ ] (WIP) Third-party libraries as git sub modules

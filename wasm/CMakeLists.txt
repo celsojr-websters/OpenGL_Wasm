@@ -1,69 +1,51 @@
-# WASM build configuration
 cmake_minimum_required(VERSION 3.20)
 project(OpenGLWASM)
 
-# FetchContent for dependencies
-include(FetchContent)
+# Set paths
+set(EXTERNAL_DIR ${CMAKE_SOURCE_DIR}/third-party)
+set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
+set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/includes)
+set(RESOURCES_DIR ${CMAKE_SOURCE_DIR}/resources)
 
-# GLFW
-FetchContent_Declare(
-    glfw
-    GIT_REPOSITORY https://github.com/glfw/glfw.git
-    GIT_TAG 3.3.8
-    GIT_SHALLOW    TRUE
-    GIT_PROGRESS   TRUE
-)
-FetchContent_MakeAvailable(glfw)
+# Add submodules
+# add_subdirectory(${EXTERNAL_DIR}/glfw ${CMAKE_BINARY_DIR}/third-party/glfw)
+# set_target_properties(glfw PROPERTIES FOLDER "Dependencies")
 
-# GLM
-FetchContent_Declare(
-    glm
-    GIT_REPOSITORY https://github.com/g-truc/glm.git
-    GIT_TAG 0.9.9.8
-    GIT_SHALLOW    TRUE
-    GIT_PROGRESS   TRUE
-)
-FetchContent_MakeAvailable(glm)
+# GLM (header-only)
+set(GLM_INCLUDE_DIR ${EXTERNAL_DIR}/glm)
 
-# stb_image
-FetchContent_Declare(
-    stb
-    GIT_REPOSITORY https://github.com/nothings/stb.git
-    GIT_TAG master
-    GIT_SHALLOW    TRUE
-    GIT_PROGRESS   TRUE
-)
-FetchContent_MakeAvailable(stb)
+# stb_image (header-only)
+set(STB_INCLUDE_DIR ${EXTERNAL_DIR}/stb)
 
 # FreeType
-FetchContent_Declare(
-    freetype
-    GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
-    GIT_TAG VER-2-13-0
-    GIT_SHALLOW    TRUE
-    GIT_PROGRESS   TRUE
-)
-FetchContent_MakeAvailable(freetype)
+add_subdirectory(${EXTERNAL_DIR}/freetype ${CMAKE_BINARY_DIR}/third-party/freetype)
 
-# GLOB for sources
+# Source and header files
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS ${SRC_DIR}/*.cpp)
 file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS ${INCLUDE_DIR}/*.h)
+file(GLOB GLAD_FILES ${EXTERNAL_DIR}/glad/src/glad.c)
 
 # Add executable
-add_executable(OpenGLWASM ${SOURCES} ${HEADERS})
+add_executable(OpenGLWASM ${SOURCES} ${HEADERS} ${GLAD_FILES})
 
 # Include directories
-target_include_directories(OpenGLWASM PRIVATE ${INCLUDE_DIR} ${stb_SOURCE_DIR})
+target_include_directories(OpenGLWASM PRIVATE 
+    ${INCLUDE_DIR}
+    ${GLM_INCLUDE_DIR}
+    ${STB_INCLUDE_DIR}
+    ${EXTERNAL_DIR}/glad/include
+    ${EXTERNAL_DIR}/freetype/include
+)
 
-# Link libraries
-target_link_libraries(OpenGLWASM glfw glm freetype)
-
-# Resources
-target_compile_definitions(OpenGLWASM PRIVATE RESOURCES_DIR="${RESOURCES_DIR}")
+# Link GLFW and FreeType libraries
+target_link_libraries(OpenGLWASM glfw freetype)
 
 # Add Emscripten-specific flags
 set_target_properties(OpenGLWASM PROPERTIES 
     OUTPUT_NAME "index"
     SUFFIX ".html"
-    LINK_FLAGS "-Os -s USE_WEBGL2=1 -s FULL_ES3=1 -s USE_GLFW=3 -s WASM=1")
-em_link_js_library(wasm ${libraryJsFiles})
+    LINK_FLAGS "-Os -s USE_WEBGL2=1 -s FULL_ES3=1 -s USE_GLFW=3 -s WASM=1"
+)
+
+# Set the resource directory as a compile-time definition
+target_compile_definitions(OpenGLWASM PRIVATE RESOURCES_DIR="${RESOURCES_DIR}")
